@@ -1,9 +1,8 @@
 <jsp:include page="partials/header.jsp" />
 <%@page import="java.sql.*"%>
 <%
-    Boolean willShip = false;
-    int O_QUANTITY = 1;
-    double CAT_PRICE = 0, serviceFee = 0.07, shippingFee = 5.95, O_FEE = 0, subTotal = 0, O_TOTAL = 0;
+    int O_QUANTITY = 1, C_ID = 0;
+    double CAT_PRICE = 0, serviceFee = 0.07, O_SHIPPING = 0, O_FEE = 0, subTotal = 0, O_TOTAL = 0;
     String method = request.getMethod();
     
     // Get params from post method
@@ -37,14 +36,14 @@
         // Calculate fee
         O_FEE = subTotal * serviceFee;
 
-        // Add shipping if user selects this option
-        if (shipping.equalsIgnoreCase("Ship to address ($5.95)")) {
-            O_FEE += shippingFee;
-            willShip = true;
-        }
-
         // Calculate the total
         O_TOTAL = subTotal + O_FEE;
+        
+        // Add shipping if user selects this option
+        if (shipping.equalsIgnoreCase("Ship to address ($5.95)")) {
+            O_SHIPPING = 5.95;
+            O_TOTAL += O_SHIPPING;
+        }
 
         Connection conn = null;
         try {
@@ -77,7 +76,7 @@
             
             // Get the auto generated key and store it for next orders table insertion
             ResultSet generateKey = cStatement.getGeneratedKeys();
-            int C_ID = 0;
+    
             if (generateKey.next()) {
                 C_ID = generateKey.getInt(1);
             }
@@ -90,7 +89,7 @@
 
             PreparedStatement oStatement = conn.prepareStatement(oPreparedQuery);
             oStatement.setInt(1, O_QUANTITY);
-            oStatement.setBoolean(2, willShip);
+            oStatement.setDouble(2, O_SHIPPING);
             oStatement.setDouble(3, O_FEE);
             oStatement.setDouble(4, O_TOTAL);
             oStatement.setString(5, O_CATNAME);
@@ -100,14 +99,13 @@
 
             // Prepare to update cat info
             StringBuilder catBuilder = new StringBuilder();
-            catBuilder.append("UPDATE SEATS SET S_SOLD = S_SOLD + ?, S_PRICE = S_PRICE + ?, S_TOTAL = S_TOTAL + ? WHERE S_CAT = ?");
+            catBuilder.append("UPDATE SEATS SET S_SOLD = S_SOLD + ?, S_TOTAL = S_TOTAL + ? WHERE S_CAT = ?");
             String catPreparedQuery = catBuilder.toString();
 
             PreparedStatement catStatement = conn.prepareStatement(catPreparedQuery);
             catStatement.setInt(1, O_QUANTITY);
             catStatement.setDouble(2, O_TOTAL);
-            catStatement.setDouble(3, O_TOTAL);
-            catStatement.setString(4, O_CATNAME);            
+            catStatement.setString(3, O_CATNAME);            
             
             catStatement.executeUpdate();
 
@@ -129,7 +127,9 @@
                 e.printStackTrace();
             }
         }
-
+        response.setStatus(response.SC_MOVED_TEMPORARILY);
+        session.setAttribute("C_ID", C_ID);
+        response.setHeader("Location", "order.jsp");           
     }
 %> 
 
