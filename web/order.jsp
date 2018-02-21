@@ -29,17 +29,6 @@
         String queryTwo = "SELECT O.O_QUANTITY, O.O_SHIPPING, O.O_FEE, O.O_TOTAL, O.O_CATNAME, S.S_PRICE FROM ORDERS O, SEATS S WHERE O.O_CATNAME = S.S_CAT AND O.C_ID = " + C_ID;
         preparedStatementTwo = conn.prepareStatement(queryTwo);
         rsTwo = preparedStatementTwo.executeQuery();
-
-        // Third query
-        String queryThree = "SELECT S_CAT, S_PRICE FROM SEATS";
-        preparedStatementThree = conn.prepareStatement(queryThree);
-        rsThree = preparedStatementThree.executeQuery();
-
-        // Fourth and final query
-        String queryFour = "SELECT SUM(S_TOTAL) AS S_TOTAL FROM SEATS";
-        preparedStatementFour = conn.prepareStatement(queryFour);
-        rsFour = preparedStatementFour.executeQuery();
-
 %>
 <main class="section">
     <div class="container">
