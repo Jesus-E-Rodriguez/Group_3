@@ -14,6 +14,7 @@ DROP TABLE SEATS;
 DROP TABLE CLIENTS;
 
 /* Create table statements*/
+/* TO DO Add subtotal category for Seats table to keep track of shipping and service fees */
 CREATE TABLE SEATS (
     S_CAT VARCHAR(10) NOT NULL PRIMARY KEY,
     S_PRICE DOUBLE NOT NULL,
@@ -43,7 +44,6 @@ CREATE TABLE ORDERS (
     FOREIGN KEY (C_ID) REFERENCES CLIENTS(C_ID) 
 );
 
-
 /* SEATS TABLE INFO */
 INSERT INTO SEATS(S_CAT, S_PRICE, S_SOLD, S_TOTAL)
     VALUES('Category 1', 50, null, null);
@@ -53,9 +53,6 @@ INSERT INTO SEATS(S_CAT, S_PRICE, S_SOLD, S_TOTAL)
 
 INSERT INTO SEATS(S_CAT, S_PRICE, S_SOLD, S_TOTAL)
     VALUES('Category 3', 30, null, null);
-
-
-
 
 /* Random client info */
 INSERT INTO CLIENTS( C_FNAME, C_LNAME, C_EMAIL, C_ADDRESS, C_ZIP, C_CITY, C_STATE)
@@ -88,6 +85,7 @@ UPDATE SEATS
     SET S_SOLD = 1, S_TOTAL = 32.10
     WHERE S_CAT = 'Category 3';
 
+/* Old database */
 /*
 INSERT INTO (CAT_ID, CAT_PRICE, CAT_SOLD, CAT_TOTAL)
     VALUES ('Category 1', 50, 1, 50);
