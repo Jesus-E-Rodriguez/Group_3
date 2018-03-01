@@ -156,7 +156,7 @@
             <div class="form-row">
                 <div class="form-group col-12 col-md-5">
                     <label for="C_ADDRESS">Address</label>
-                    <input type="text" class="form-control" name="C_ADDRESS" id="C_ADDRESS" value="1234 Main St"  required>
+                    <input type="text" class="form-control" name="C_ADDRESS" id="C_ADDRESS" value="1234 Main St" required>
                 </div>
                 <div class="form-group col-12 col-md-3">
                     <label for="C_CITY">City</label>
@@ -165,12 +165,12 @@
                 <div class="form-group col-12 col-md-2">
                     <label for="C_STATE">State</label>
                     <select class="form-control" name="C_STATE" id="C_STATE" required value="NC">
-                        <option selected>Choose...</option>
+                        <option value="" disabled>Choose...</option>
                         <option value="AL">Alabama</option>
                         <option value="AK">Alaska</option>
                         <option value="AZ">Arizona</option>
                         <option value="AR">Arkansas</option>
-                        <option value="CA">California</option>
+                        <option value="CA" selected>California</option>
                         <option value="CO">Colorado</option>
                         <option value="CT">Connecticut</option>
                         <option value="DE">Delaware</option>
