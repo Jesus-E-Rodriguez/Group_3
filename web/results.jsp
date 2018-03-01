@@ -31,7 +31,7 @@
         rsTwo = preparedStatementTwo.executeQuery();
         
         // Third query
-        String queryThree = "SELECT S_CAT, S_PRICE FROM SEATS";
+        String queryThree = "SELECT S_CAT, S_PRICE, S_SOLD FROM SEATS";
         preparedStatementThree = conn.prepareStatement(queryThree);
         rsThree  = preparedStatementThree.executeQuery();
         
@@ -105,7 +105,7 @@
             
                 <tr>
                     <td><%=rsThree.getString("S_CAT")%></td>
-                    <td><%=String.format("$%,.2f", rsThree.getDouble("S_PRICE"))%></td>
+                    <td><%=String.format("$%,.2f", (rsThree.getDouble("S_PRICE")*rsThree.getDouble("S_SOLD")))%></td>
                 </tr>
            <%
                }
