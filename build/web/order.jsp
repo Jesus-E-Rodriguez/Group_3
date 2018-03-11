@@ -5,13 +5,9 @@
     Connection conn = null;
     ResultSet rsOne = null;
     ResultSet rsTwo = null;
-    ResultSet rsThree = null;
-    ResultSet rsFour = null;
     boolean isResultSetEmpty = true;
     PreparedStatement preparedStatementOne = null;
     PreparedStatement preparedStatementTwo = null;
-    PreparedStatement preparedStatementThree = null;
-    PreparedStatement preparedStatementFour = null;
     String driver = "org.apache.derby.jdbc.ClientDataSource";
     String url = "jdbc:derby://localhost:1527/Concert;user=app;password=password";
     int C_ID = Integer.parseInt(session.getAttribute("C_ID").toString());
@@ -30,91 +26,95 @@
         preparedStatementTwo = conn.prepareStatement(queryTwo);
         rsTwo = preparedStatementTwo.executeQuery();
 %>
-<main class="section">
-    <div class="container">
-        <h1>This is the order page!</h1>
-        <p class="lead">Print this page for a copy of your records.</p>
-        <table class="table">
-            <thead class="thead-light">
-                <tr>
-                    <th colspan="2">Personal Information</th>
-                </tr>
-            </thead>
-            <%     while (rsOne.next()) {
-                    //If we enter to the while, the ResultSet wasn't empty
-                    isResultSetEmpty = false;
-            %>
-            <tbody>
-                <tr>
-                    <td>First Name: <strong><%=rsOne.getString("C_FNAME")%></strong></td>
-                    <td>Last Name: <strong><%=rsOne.getString("C_LNAME")%></strong></td>
 
-                </tr>
-                <tr>
-                    <td colspan="2">Address: <strong><%=rsOne.getString("C_ADDRESS")%></strong></td>
-                </tr>
-                <tr>
-                    <td>City: <strong><%=rsOne.getString("C_CITY")%></strong></td>
-                    <td>Zip Code: <strong><%=rsOne.getString("C_ZIP")%></strong></td>
-                </tr>
-                <tr>
-                    <td>State: <strong><%=rsOne.getString("C_STATE")%></strong></td>
-                    <td>Email: <strong><%=rsOne.getString("C_EMAIL")%></strong></td>
-                </tr>
-            </tbody>
-            <% }%>
-        </table>
-        <table class="table">
-            <thead class="thead-light">
-                <tr>
-                    <th>Category</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Service Fee</th>
-                    <th>Shipping Fee</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <%     while (rsTwo.next()) {
-                    //If we enter to the while, the ResultSet wasn't empty
-                    isResultSetEmpty = false;
-            %>
-            <tbody>
-                <tr>
-                    <td><%=rsTwo.getString("O_CATNAME")%></td>
-                    <td><%=rsTwo.getString("O_QUANTITY")%>  X</td>
-                    <td><%=String.format("$%,.2f", rsTwo.getDouble("S_PRICE"))%></td>
-                    <td><%=String.format("$%,.2f", rsTwo.getDouble("O_FEE"))%></td>
-                    <td><%=String.format("$%,.2f", rsTwo.getDouble("O_SHIPPING"))%></td>
-                    <td><%=String.format("$%,.2f", rsTwo.getDouble("O_TOTAL"))%></td>
-                </tr>
-            <% } %>
-        </table>
-        <%
+<div class="background background2 text--light">
+    <div class="wrapper">
+        <div class="box">
+            <h1>This is your ticket to Jazz Grasp!</h1>
+            <h2>See you at Theatre Charlotte on April 13th, 2018 at 7:30pm.</h2>
+            <p class="text--emphasize">Print this page for a copy of your records.</p>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th colspan="2">Personal Information</th>
+                    </tr>
+                </thead>
+                <%     while (rsOne.next()) {
+                        //If we enter to the while, the ResultSet wasn't empty
+                        isResultSetEmpty = false;
+                %>
+                <tbody>
+                    <tr>
+                        <td>First Name: <strong><%=rsOne.getString("C_FNAME")%></strong></td>
+                        <td>Last Name: <strong><%=rsOne.getString("C_LNAME")%></strong></td>
 
-            if (isResultSetEmpty) {
-        %>
-        <h2>The database is empty</h2>
-        <%
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                try {
-                    conn.rollback();
-                } catch (Exception re) {
-                    re.printStackTrace();
-                }
-            } finally {
-                // try to close the connection...
-                try {
-                    // close the connection...
-                    conn.close();
+                    </tr>
+                    <tr>
+                        <td colspan="2">Address: <strong><%=rsOne.getString("C_ADDRESS")%></strong></td>
+                    </tr>
+                    <tr>
+                        <td>City: <strong><%=rsOne.getString("C_CITY")%></strong></td>
+                        <td>Zip Code: <strong><%=rsOne.getString("C_ZIP")%></strong></td>
+                    </tr>
+                    <tr>
+                        <td>State: <strong><%=rsOne.getString("C_STATE")%></strong></td>
+                        <td>Email: <strong><%=rsOne.getString("C_EMAIL")%></strong></td>
+                    </tr>
+                </tbody>
+                <% }%>
+            </table>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Service Fee</th>
+                        <th>Shipping Fee</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <%     while (rsTwo.next()) {
+                        //If we enter to the while, the ResultSet wasn't empty
+                        isResultSetEmpty = false;
+                %>
+                <tbody>
+                    <tr>
+                        <td><%=rsTwo.getString("O_CATNAME")%></td>
+                        <td><%=rsTwo.getString("O_QUANTITY")%>  X</td>
+                        <td><%=String.format("$%,.2f", rsTwo.getDouble("S_PRICE"))%></td>
+                        <td><%=String.format("$%,.2f", rsTwo.getDouble("O_FEE"))%></td>
+                        <td><%=String.format("$%,.2f", rsTwo.getDouble("O_SHIPPING"))%></td>
+                        <td><%=String.format("$%,.2f", rsTwo.getDouble("O_TOTAL"))%></td>
+                    </tr>
+                    <% } %>
+            </table>
+            <%
+
+                if (isResultSetEmpty) {
+            %>
+            <h2>The database is empty</h2>
+            <%
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    try {
+                        conn.rollback();
+                    } catch (Exception re) {
+                        re.printStackTrace();
+                    }
+                } finally {
+                    // try to close the connection...
+                    try {
+                        // close the connection...
+                        conn.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        %>
+            %>
+        </div>
     </div>
-</main>
+</div>
 
 <jsp:include page="partials/footer.jsp" />
