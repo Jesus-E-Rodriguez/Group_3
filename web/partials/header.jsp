@@ -15,35 +15,30 @@
 
         <!-- Title -->
         <title>Jazz Concert</title>
-
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        
+        <!-- Custom icons -->
+        <link rel="stylesheet" href="css/font-awesome.css" />
         
         <!-- Custom CSS -->
         <link rel="stylesheet" href="css/styles.css" />
     </head>
     <body>
-        <header>
-            <!-- Fixed navbar -->
-            <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-                <div class="container">
-                    <a class="navbar-brand" href="index.jsp">Jazz Grasp</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarCollapse">
-                        <ul class="navbar-nav ml-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" href="index.jsp">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="tickets.jsp">Order Tickets</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="results.jsp">Results</a>
-                            </li>
-                        </ul>
-                    </div>
+        <header class="background--dark">
+            <!-- Navigation -->
+            <nav class="wrapper--unpadded">
+                <div class="navbar__content">
+                    <a class="navbar__content__brand--dark" href="#"><img src="img/jazz_grasp_logo.png" alt="Jazz Grasp Logo"></a>
+                    <ul class="navigation">
+                        <li class="navigation__item">
+                            <a class="navigation__item__link--dark" href="index.jsp">Home</a>
+                        </li>
+                        <li class="navigation__item">
+                            <a class="navigation__item__link--dark" href="tickets.jsp">Order Tickets</a>
+                        </li>
+                        <li class="navigation__item">
+                            <a class="navigation__item__link--dark" href="results.jsp">Results</a>
+                        </li>
+                    </ul>
                 </div>
             </nav>
         </header>
