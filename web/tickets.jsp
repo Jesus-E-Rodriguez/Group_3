@@ -244,9 +244,15 @@
             <div class="grid--half__item">
                 <div class="box">
                     <h2>Available Tickets</h2>
+                    <script>var categoryLeft = [0];</script>
                     <% while (query.next()) {%>
                     <em><strong><%=query.getString("S_CAT")%>:</strong> <%=(75 - query.getInt("S_SOLD"))%> tickets available</em><br>
-                    <% }
+                    <script>
+                        categoryLeft.push(<%out.println(75 - query.getInt("S_SOLD"));%>);
+                    </script>
+                    <% 
+                        
+                       }
                         } catch (Exception e) {
                             e.printStackTrace();
                             try {
@@ -263,6 +269,12 @@
                                 e.printStackTrace();
                             }
                         }%>
+                        <script>
+                            function changeMaxField(a) {
+                                document.getElementById('O_QUANTITY').setAttribute('max', categoryLeft[a.value.slice(-1)]);
+                                document.getElementById('O_QUANTITY_label').innerHTML = "How many tickets? (1MIN - " + categoryLeft[a.value.slice(-1)] + " MAX)";
+                            }
+                        </script>
                 </div>
             </div>
         </div>
@@ -364,14 +376,14 @@
                     <div class="form--row">
                         <div class="form--group">
                             <label for="O_CATNAME">Please select a category</label>
-                            <select class="form--control" id="O_CATNAME" name="O_CATNAME" size="3" required>
+                            <select class="form--control" id="O_CATNAME" name="O_CATNAME" size="3" onchange="changeMaxField(this);" required>
                                 <option>Category 1</option>
                                 <option>Category 2</option>
                                 <option>Category 3</option>
                             </select>
                         </div>
                         <div class="form--group">
-                            <label for="O_QUANTITY">How many tickets? (1MIN - 75 MAX)</label>
+                            <label for="O_QUANTITY" id="O_QUANTITY_label">How many tickets? (1MIN - 75 MAX)</label>
                             <input class="form--control" id="O_QUANTITY" name="O_QUANTITY" type="number" min="1" max="75" value="1" required>
                         </div>
                         <div class="form--group">
