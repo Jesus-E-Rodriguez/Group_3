@@ -27,7 +27,7 @@
         rsTwo = preparedStatementTwo.executeQuery();
 %>
 
-<div class="background background2 text--light">
+<div class="showcase--medium-screen-plus background background2 text--light">
     <div class="wrapper">
         <div class="box">
             <h1>This is your ticket to Jazz Grasp!</h1>
