@@ -257,7 +257,7 @@
 <div class="error-warning"><p><%=message%></p></div>
         <% }%>
 
-<div class="background background2">
+<div class="showcase--medium-screen-plus background background2">
     <div class="wrapper text--light">
         <div class="grid--half">
             <div class="grid--half__item">
