@@ -937,6 +937,10 @@ p {
     height: 80vh;
 }
 
+.showcase--medium-screen-plus {
+    min-height: 90vh;
+}
+
 .showcase--full-screen {
     height: 100vh;
 }
