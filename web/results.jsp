@@ -65,7 +65,7 @@
                     <% } %>
                 </tbody>
             </table>
-            <p class="lead">Tickets Available Per Category</p>
+           <p class="text--emphasize">Tickets Available Per Category</p>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -87,7 +87,7 @@
                     <% } %>
                 </tbody>
             </table>
-            <p class="lead">Sales Report</p>
+            <p class="text--emphasize">Sales Report</p>
             <table class="table table-striped">
                 <thead>
                     <tr>
