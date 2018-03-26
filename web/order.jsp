@@ -32,7 +32,7 @@
         <div class="box">
             <h1>This is your ticket to Jazz Grasp!</h1>
             <h2>See you at Theatre Charlotte on April 13th, 2018 at 7:30pm.</h2>
-            <p class="text--emphasize">Print this page for a copy of your records.</p>
+            <p class="text--emphasize">Print a copy of this page for your records. Tickets are non-refundable.</p>
             <table class="table">
                 <thead class="thead-light">
                     <tr>
