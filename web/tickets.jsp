@@ -262,11 +262,15 @@
         <div class="grid--half">
             <div class="grid--half__item">
                 <h1>Reserve Seats</h1>
-                <p class="text--emphasize">Enter your personal information below. <br>A 7% service fee will be added to all online purchases.</p>
+                <p class="text--emphasize">Enter your personal information below. <br>A 7% service fee will be added to all online purchases. Tickets are non-refundable.</p>
             </div>
             <div class="grid--half__item">
                 <div class="box">
-                    <h2>Available Tickets</h2>
+					<h3>Ticket Prices</h3>
+				    <p>Category 1: Rows A-C - $50<br>Category 2: Rows D-F - $40<br>Category 3: Rows G-I - $30</p>
+                    </div>
+					<div class="box">
+					<h3>Available Tickets</h3>	
                     <script>var ticketsAvailable = [0];</script>
                     <% while (query.next()) {%>
                     <em><strong><%=query.getString("S_CAT")%>:</strong> <%=(75 - query.getInt("S_SOLD"))%> tickets available</em><br>
@@ -274,7 +278,7 @@
                         ticketsAvailable.push(<% out.print(75 - query.getInt("S_SOLD"));%>);
                     </script>
                     <%
-
+						
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
