@@ -498,6 +498,13 @@ a {
 a:hover {
     color: #d11642;
 }
+.validator{
+	color:#ffffff;
+}
+
+.validator:hover {
+    color: #d11642;
+}
 
 p {
     margin-top: 0;
@@ -776,7 +783,7 @@ p {
 }
 
 .navigation__item__link--dark:hover {
-    color: #ffffff;
+    color: #dcdcdc;
 }
 
 .wrapper, .wrapper--unpadded {
@@ -935,6 +942,10 @@ p {
 
 .showcase--medium-screen {
     height: 80vh;
+}
+
+.showcase--medium-screen-plus {
+    min-height: 90vh;
 }
 
 .showcase--full-screen {

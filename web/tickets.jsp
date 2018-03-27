@@ -248,7 +248,7 @@
         conn.setAutoCommit(false);
 
         // First query
-        String queryStr = "SELECT S_CAT, S_SOLD FROM SEATS";
+        String queryStr = "SELECT S_CAT, S_SOLD, S_PRICE FROM SEATS";
         preparedStatement = conn.prepareStatement(queryStr);
         query = preparedStatement.executeQuery();
 %> 
@@ -265,20 +265,25 @@
                 <p class="text--emphasize">Enter your personal information below. <br>A 7% service fee will be added to all online purchases. Tickets are non-refundable.</p>
             </div>
             <div class="grid--half__item">
-                <div class="box">
+                <!-- <div class="box">
 					<h3>Ticket Prices</h3>
 				    <p>Category 1: Rows A-C - $50<br>Category 2: Rows D-F - $40<br>Category 3: Rows G-I - $30</p>
-                    </div>
+                    </div>-->
 					<div class="box">
-					<h3>Available Tickets</h3>	
-                    <script>var ticketsAvailable = [0];</script>
+					<h3>Available Tickets and Prices</h3>	
+                    <script>
+                        var ticketsAvailable = [0];
+                        var rowsInCat = [0, "Rows A-C", "Rows D-F", "Rows G-I"];
+                    </script>
+                    <% int CAT_ID=1; %>
                     <% while (query.next()) {%>
-                    <em><strong><%=query.getString("S_CAT")%>:</strong> <%=(75 - query.getInt("S_SOLD"))%> tickets available</em><br>
+                    <span id="info_cat<%= CAT_ID %>"><em><strong><%=query.getString("S_CAT")%>:</strong> <%=(75 - query.getInt("S_SOLD"))%> tickets available</em></span><br>
                     <script>
                         ticketsAvailable.push(<% out.print(75 - query.getInt("S_SOLD"));%>);
                     </script>
                     <%
 						
+                    CAT_ID++;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -297,9 +302,15 @@
                             }
                         }%>
                     <script>
+                        var info_cat1 = document.getElementById("info_cat1");
+                        info_cat1.innerHTML = info_cat1.innerHTML + " <em>- Rows A-C - $50</em>";
+                        var info_cat2 = document.getElementById("info_cat2");
+                        info_cat2.innerHTML = info_cat2.innerHTML + " <em>- Rows D-F - $40</em>";
+                        var info_cat3 = document.getElementById("info_cat3");
+                        info_cat3.innerHTML = info_cat3.innerHTML + " <em>- Rows G-I - $30</em>";
                         function changeMaxField(input) {
                             document.getElementById('O_QUANTITY').setAttribute('max', ticketsAvailable[input.value.slice(-1)]);
-                            document.getElementById('O_QUANTITY_label').innerHTML = "How many tickets? (1MIN - " + ticketsAvailable[input.value.slice(-1)] + " MAX)";
+                            document.getElementById('O_QUANTITY_label').innerHTML = "How many tickets? (1MIN - " + ticketsAvailable[input.value.slice(-1)] + "MAX)";
                         }
                     </script>
                 </div>
