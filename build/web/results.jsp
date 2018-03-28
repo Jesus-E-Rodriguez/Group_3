@@ -41,7 +41,7 @@
         rsFour = preparedStatementFour.executeQuery();
 
 %>
-<main class="background background2">
+<main class="showcase--medium-screen-plus background background2">
     <div class="wrapper">
         <div class="box text--light">
             <h1>Results of the query</h1>

@@ -1,6 +1,6 @@
 <jsp:include page="partials/header.jsp" />
 
-<div class="showcase--full-screen background display-flex align-items-center" id="background1">
+<div class="showcase--medium-screen-plus background display-flex align-items-center" id="background1">
         <div class="wrapper--unpadded">
             <h1>The show is about to begin!</h1>
             <p class="text--emphasize">Get ready Charlotte, North Carolina! The word renowned jazz band, 
