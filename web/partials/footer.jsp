@@ -5,7 +5,7 @@
                         <small>&copy; 2018 Jazz Grasp</small>
                     </div>
                     <div class="grid--thirds__item text--center">
-                        <a href="http://validator.w3.org/check?uri=referer">HTML</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a>
+                        <a href="http://validator.w3.org/check?uri=referer" class="validator">HTML</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer" class="validator">CSS</a>
                     </div>
                     <div class="grid--thirds__item text--right">
                         <ul class="social__icons">
