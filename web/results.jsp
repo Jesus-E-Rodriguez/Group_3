@@ -27,7 +27,7 @@
             <!-- Navigation -->
             <nav class="wrapper--unpadded">
                 <div class="navbar__content">
-                    <a class="navbar__content__brand--dark" href="#"><img src="img/jazz_grasp_logo.png" alt="Jazz Grasp Logo"></a>
+                    <a class="navbar__content__brand--dark" href="index.jsp"><img src="img/jazz_grasp_logo.png" alt="Jazz Grasp Logo"></a>
                     <ul class="navigation">
                         <li class="navigation__item">
                             <a class="navigation__item__link--dark" href="index.jsp">Home</a>
@@ -109,7 +109,7 @@
                             <% } %>
                         </tbody>
                     </table>
-                    <p class="lead">Tickets Available Per Category</p>
+                    <p class="text--emphasize">Tickets Available Per Category</p>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -131,7 +131,7 @@
                             <% } %>
                         </tbody>
                     </table>
-                    <p class="lead">Sales Report</p>
+                    <p class="text--emphasize">Sales Report</p>
                     <table class="table table-striped">
                         <thead>
                             <tr>
