@@ -27,7 +27,7 @@
             <!-- Navigation -->
             <nav class="wrapper--unpadded">
                 <div class="navbar__content">
-                    <a class="navbar__content__brand--dark" href="#"><img src="img/jazz_grasp_logo.png" alt="Jazz Grasp Logo"></a>
+                    <a class="navbar__content__brand--dark" href="index.jsp"><img src="img/jazz_grasp_logo.png" alt="Jazz Grasp Logo"></a>
                     <ul class="navigation">
                         <li class="navigation__item">
                             <a class="navigation__item__link--dark" href="index.jsp">Home</a>
@@ -46,15 +46,26 @@
         <%@page import="java.sql.*"%>
 
         <%
+            // Connection vars
             Connection conn = null;
             ResultSet rsOne = null;
             ResultSet rsTwo = null;
+            ResultSet rsThree = null;
             boolean isResultSetEmpty = true;
             PreparedStatement preparedStatementOne = null;
             PreparedStatement preparedStatementTwo = null;
+            PreparedStatement preparedStatementThree = null;
+
+            // Driver
             String driver = "org.apache.derby.jdbc.ClientDataSource";
+            // Database url
             String url = "jdbc:derby://localhost:1527/Concert;user=app;password=password";
-            int C_ID = Integer.parseInt(session.getAttribute("C_ID").toString());
+
+            // Client id
+            final int C_ID = Integer.parseInt(session.getAttribute("C_ID").toString());
+
+            final double SHIPPING_FEE = 5.95;
+
             try {
 
                 Class.forName(driver).newInstance();
@@ -69,6 +80,11 @@
                 String queryTwo = "SELECT O.O_QUANTITY, O.O_SHIPPING, O.O_FEE, O.O_TOTAL, O.O_CATNAME, S.S_PRICE FROM ORDERS O, SEATS S WHERE O.O_CATNAME = S.S_CAT AND O.C_ID = " + C_ID;
                 preparedStatementTwo = conn.prepareStatement(queryTwo);
                 rsTwo = preparedStatementTwo.executeQuery();
+
+                // Third query
+                String queryThree = "SELECT O_SHIPPING FROM ORDERS WHERE C_ID = " + C_ID;
+                preparedStatementThree = conn.prepareStatement(queryThree);
+                rsThree = preparedStatementThree.executeQuery();
         %>
 
         <div class="showcase--medium-screen-plus background background2 text--light">
@@ -76,7 +92,16 @@
                 <div class="box">
                     <h1>This is your ticket to Jazz Grasp!</h1>
                     <h2>See you at Theatre Charlotte on April 13th, 2018 at 7:30pm.</h2>
-                    <p class="text--emphasize">Print a copy of this page for your records. Tickets are non-refundable.</p>
+                    <p class="text--emphasize">
+                        <% while (rsThree.next()) {
+                            if (rsThree.getDouble("O_SHIPPING") == SHIPPING_FEE) { %>
+                                Please wait 5 to 7 business days for your ticket.
+                        <%   } else { %>
+                                Print a copy of this page for your records.
+                        <%      }
+                            } %>
+
+                        Tickets are non-refundable.</p>
                     <table class="table">
                         <thead class="thead-light">
                             <tr>
