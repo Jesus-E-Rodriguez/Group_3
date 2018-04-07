@@ -27,7 +27,7 @@
             <!-- Navigation -->
             <nav class="wrapper--unpadded">
                 <div class="navbar__content">
-                    <a class="navbar__content__brand--dark" href="#"><img src="img/jazz_grasp_logo.png" alt="Jazz Grasp Logo"></a>
+                    <a class="navbar__content__brand--dark" href="index.jsp"><img src="img/jazz_grasp_logo.png" alt="Jazz Grasp Logo"></a>
                     <ul class="navigation">
                         <li class="navigation__item">
                             <a class="navigation__item__link--dark" href="index.jsp">Home</a>
@@ -47,8 +47,9 @@
         <div class="showcase--medium-screen-plus background display-flex align-items-center" id="background1">
             <div class="wrapper--unpadded">
                 <h1>The show is about to begin!</h1>
-                <p class="text--emphasize">Get ready Charlotte, North Carolina! The word renowned jazz band, 
-                    Jazz Grasp is coming to Theatre Charlotte on April 13, 2018 at 7:30pm for a one time limited 
+                <p class="text--emphasize">Get ready Charlotte, North Carolina! The world renowned jazz band, 
+                    Jazz Grasp, with members Jesus Rodriguez, Katie Kelbaugh, Lauren Jacksina, and Sam Malanchuk,
+					is coming to Theatre Charlotte on April 13, 2018 at 7:30pm for a one time limited 
                     seating jazz concert that will blow you away. This is one performance you truly don't 
                     want to miss.
                 </p>
