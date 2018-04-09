@@ -1039,8 +1039,8 @@ p {
 }
 
 .button--primary-color:hover {
-    background: #d11642;
-    color: #ffffff;
+    background: #ffffff;
+    color: #d11642;
     border-color: #d11642;
     -webkit-box-shadow: 0px 8px 10px -5px rgba(0, 0, 0, 0.5);
     box-shadow: 0px 8px 10px -5px rgba(0, 0, 0, 0.5);
