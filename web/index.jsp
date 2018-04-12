@@ -1,13 +1,13 @@
 <%-- 
     Document   : index
     Created on : Mar 22, 2018, 7:54:02 PM
-    Author     : Katie
+    Author     : Katie And Lauren
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@ page language="java" import="java.util.*" errorPage="" %>
-<html>
+<html lang="en">
     <head>
         <!-- Required meta tags -->
         <meta charset="utf-8">
@@ -46,7 +46,7 @@
 
         <div class="showcase--medium-screen-plus background display-flex align-items-center" id="background1">
             <div class="wrapper--unpadded">
-                <h1>The show is about to begin!</h1>
+                <h1 class="text--uppercase">The Show is About to Begin!</h1>
                 <p class="text--emphasize">Get ready Charlotte, North Carolina! The world renowned jazz band, 
                     Jazz Grasp, with members Jesus Rodriguez, Katie Kelbaugh, Lauren Jacksina, and Sam Malanchuk,
 					is coming to Theatre Charlotte on April 13, 2018 at 7:30pm for a one time limited 

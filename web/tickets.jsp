@@ -7,7 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@ page language="java" import="java.util.*" errorPage="" %>
-<html>
+<html lang="en">
     <head>
         <!-- Required meta tags -->
         <meta charset="utf-8">
@@ -85,205 +85,200 @@
 
             // Main variables
             String method = request.getMethod(); // To get the request
-            boolean error = false; // To determine if there is an error
+
+            // To determine if there is an error and if the order should be shown
+            boolean error = false, showOrder = false;
             String message = ""; // To display messages to the user
+            
+            // Delcare relevant variables
+            int O_QUANTITY = 1, C_ID = 0; // Set minimum
+            final double CATEGORY_ONE = 50, CATEGORY_TWO = 40, CATEGORY_THREE = 30; // Set constants
+            double CAT_PRICE = 0, serviceFee = 0.07, O_SHIPPING = 0, O_FEE = 0, subTotal = 0, O_TOTAL = 0;
+            final int NAME_LENGTH = 40, EMAIL_LENGTH = 50, ADDRESS_LENGTH = 50, ZIP_LENGTH = 5, CITY_LENGTH = 50, STATE_LENGTH = 2, QUANTITY_MIN_SIZE = 1, QUANTITY_MAX_SIZE = 75;
 
             // Get params from post method
             if (method.equalsIgnoreCase("POST")) {
 
-                // Delcare relevant variables
-                int O_QUANTITY = 1, C_ID = 0;
-                final double CATEGORY_ONE = 50, CATEGORY_TWO = 40, CATEGORY_THREE = 30; // Constants 
-                double CAT_PRICE = 0, serviceFee = 0.07, O_SHIPPING = 0, O_FEE = 0, subTotal = 0, O_TOTAL = 0;
-                Pattern strPattern = Pattern.compile("(^[a-zA-Z][\\']?[a-zA-Z\\s]+$)");
-                Pattern addressPattern = Pattern.compile("([0-9]*\\)*\\(*\\s*)+");
-                Pattern emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-                Pattern numPattern = Pattern.compile("(^[0-9]+$)");
-                final int NAME_LENGTH = 40, EMAIL_LENGTH = 50, ADDRESS_LENGTH = 50, ZIP_LENGTH = 5, CITY_LENGTH = 50, STATE_LENGTH = 2, QUANTITY_MIN_SIZE = 1, QUANTITY_MAX_SIZE = 75;
+                /* Validate input for form lengths that are less than or equal to the required lengths in the database
+                    so that the databse does not throw any errors.
+                 */
+                if (request.getParameter("C_FNAME").length() <= NAME_LENGTH && request.getParameter("C_LNAME").length() <= NAME_LENGTH
+                        && request.getParameter("C_EMAIL").length() <= EMAIL_LENGTH && request.getParameter("C_ADDRESS").length() <= ADDRESS_LENGTH
+                        && request.getParameter("C_CITY").length() <= CITY_LENGTH && request.getParameter("C_ZIP").length() == ZIP_LENGTH
+                        && request.getParameter("C_STATE").length() == STATE_LENGTH && (Integer.parseInt(request.getParameter("O_QUANTITY")) >= QUANTITY_MIN_SIZE)
+                        && (Integer.parseInt(request.getParameter("O_QUANTITY")) <= QUANTITY_MAX_SIZE)) {
 
-                // Validate input for strings
-                if (strPattern.matcher(request.getParameter("C_FNAME")).find() && strPattern.matcher(request.getParameter("C_LNAME")).find()
-                        && emailPattern.matcher(request.getParameter("C_EMAIL")).find() && addressPattern.matcher(request.getParameter("C_ADDRESS")).find()
-                        && strPattern.matcher(request.getParameter("C_CITY")).find() && strPattern.matcher(request.getParameter("C_STATE")).find()
-                        && numPattern.matcher(request.getParameter("C_ZIP")).find() && numPattern.matcher(request.getParameter("O_QUANTITY")).find()) {
-
-                    // Validate input for form lengths that are less than or equal to the required lengths in the database
-                    if (request.getParameter("C_FNAME").length() <= NAME_LENGTH && request.getParameter("C_LNAME").length() <= NAME_LENGTH
-                            && request.getParameter("C_EMAIL").length() <= EMAIL_LENGTH && request.getParameter("C_ADDRESS").length() <= ADDRESS_LENGTH
-                            && request.getParameter("C_CITY").length() <= CITY_LENGTH && request.getParameter("C_ZIP").length() == ZIP_LENGTH
-                            && request.getParameter("C_STATE").length() == STATE_LENGTH && (Integer.parseInt(request.getParameter("O_QUANTITY")) >= QUANTITY_MIN_SIZE)
-                            && (Integer.parseInt(request.getParameter("O_QUANTITY")) <= QUANTITY_MAX_SIZE)) {
-
-                        // Check to see if there are any quantities to sell 
-                        while (query.next()) {
-                            if (query.getString("S_CAT").equalsIgnoreCase(request.getParameter("O_CATNAME"))) {
-                                if (75 - query.getInt("S_SOLD") == 0) {
-                                    error = true;
-                                    message = "All seats have been sold out in that category!";
-                                } else if (75 - query.getInt("S_SOLD") < Integer.parseInt(request.getParameter("O_QUANTITY"))) {
-                                    error = true;
-                                    message = "Your order cannot exceed the available seats in that category!";
-                                }
+                    // Check to see if there are any quantities to sell 
+                    while (query.next()) {
+                        if (query.getString("S_CAT").equalsIgnoreCase(request.getParameter("O_CATNAME"))) {
+                            // If all seats have been sold out, then send a message to the user
+                            if (75 - query.getInt("S_SOLD") == 0) {
+                                error = true;
+                                message = "All seats have been sold out in that category!";
+                                // If they try to order more than what is available, send a message to the user
+                            } else if (75 - query.getInt("S_SOLD") < Integer.parseInt(request.getParameter("O_QUANTITY"))) {
+                                error = true;
+                                message = "Your order cannot exceed the available seats in that category!";
                             }
                         }
-
-                        if (!error) {
-                            // Collect all of the fields from the request
-                            String C_FNAME = request.getParameter("C_FNAME");
-                            String C_LNAME = request.getParameter("C_LNAME");
-                            String C_EMAIL = request.getParameter("C_EMAIL");
-                            String C_ADDRESS = request.getParameter("C_ADDRESS");
-                            String C_CITY = request.getParameter("C_CITY");
-                            String C_STATE = request.getParameter("C_STATE");
-                            String C_ZIP = request.getParameter("C_ZIP");
-                            String O_CATNAME = request.getParameter("O_CATNAME");
-                            O_QUANTITY = Integer.parseInt(request.getParameter("O_QUANTITY"));
-                            String shipping = request.getParameter("shipping");
-
-                            // Check to see the category name and then assign the category price based on that
-                            if (O_CATNAME.equalsIgnoreCase("Category 1")) {
-                                CAT_PRICE = CATEGORY_ONE;
-                            } else if (O_CATNAME.equalsIgnoreCase("Category 2")) {
-                                CAT_PRICE = CATEGORY_TWO;
-                            } else {
-                                CAT_PRICE = CATEGORY_THREE;
-                            }
-
-                            // Calculate subtotal
-                            subTotal = CAT_PRICE * O_QUANTITY;
-
-                            // Calculate fee
-                            O_FEE = subTotal * serviceFee;
-
-                            // Calculate the total
-                            O_TOTAL = subTotal + O_FEE;
-
-                            // Add shipping if user selects this option
-                            if (shipping.equalsIgnoreCase("Ship to address ($5.95)")) {
-                                O_SHIPPING = 5.95;
-                                O_TOTAL += O_SHIPPING;
-                            }
-                            try {
-                                conn = null;
-                                Class.forName(driver);
-                                conn = DriverManager.getConnection(url);
-                                conn.setAutoCommit(false);
-                                System.out.println("DB Connection successful");
-
-                                // Prepare to insert client info
-                                StringBuilder cBuilder = new StringBuilder();
-                                cBuilder.append("INSERT INTO CLIENTS(C_FNAME, C_LNAME, C_EMAIL, C_ADDRESS, C_ZIP, C_CITY, C_STATE)");
-                                cBuilder.append("VALUES (?, ?, ?, ?, ?, ?, ?)");
-                                String cPreparedQuery = cBuilder.toString();
-
-                                /* Declare the prepared statement and once it executes, recieve back the auto generated key that was used
-                        as the primary key for the client */
-                                PreparedStatement cStatement = conn.prepareStatement(cPreparedQuery, Statement.RETURN_GENERATED_KEYS);
-                                cStatement.setString(1, C_FNAME);
-                                cStatement.setString(2, C_LNAME);
-                                cStatement.setString(3, C_EMAIL);
-                                cStatement.setString(4, C_ADDRESS);
-                                cStatement.setString(5, C_ZIP);
-                                cStatement.setString(6, C_CITY);
-                                cStatement.setString(7, C_STATE);
-
-                                // Execute the statment
-                                cStatement.executeUpdate();
-
-                                // Get the auto generated key and store it for next orders table insertion
-                                ResultSet generateKey = cStatement.getGeneratedKeys();
-
-                                // If there is a result store it in a variable
-                                if (generateKey.next()) {
-                                    C_ID = generateKey.getInt(1);
-                                }
-
-                                // Prepare to insert order info into the Orders table
-                                StringBuilder oBuilder = new StringBuilder();
-                                oBuilder.append("INSERT INTO ORDERS(O_QUANTITY, O_SHIPPING, O_FEE, O_TOTAL, O_CATNAME, C_ID)");
-                                oBuilder.append("VALUES (?, ?, ?, ?, ?, ?)");
-                                String oPreparedQuery = oBuilder.toString();
-
-                                // Set the prepared statement
-                                PreparedStatement oStatement = conn.prepareStatement(oPreparedQuery);
-                                oStatement.setInt(1, O_QUANTITY);
-                                oStatement.setDouble(2, O_SHIPPING);
-                                oStatement.setDouble(3, O_FEE);
-                                oStatement.setDouble(4, O_TOTAL);
-                                oStatement.setString(5, O_CATNAME);
-                                oStatement.setInt(6, C_ID);
-
-                                // Execute the statement
-                                oStatement.executeUpdate();
-
-                                // Prepare to update cat info
-                                StringBuilder catBuilder = new StringBuilder();
-                                catBuilder.append("UPDATE SEATS SET S_SOLD = S_SOLD + ?, S_TOTAL = S_TOTAL + ? WHERE S_CAT = ?");
-                                String catPreparedQuery = catBuilder.toString();
-
-                                // Set the prepared statment
-                                PreparedStatement catStatement = conn.prepareStatement(catPreparedQuery);
-                                catStatement.setInt(1, O_QUANTITY);
-                                catStatement.setDouble(2, O_TOTAL);
-                                catStatement.setString(3, O_CATNAME);
-
-                                // Execute the statement
-                                catStatement.executeUpdate();
-
-                                // Commit all changes to the database
-                                conn.commit();
-
-                                // Print message to ensure that all changes have been commited
-                                System.out.println("All changes commited.");
-
-                                // Catch exceptions
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                try {
-                                    conn.rollback();
-                                } catch (Exception re) {
-                                    re.printStackTrace();
-                                }
-                            } finally {
-                                // try to close the connection...
-                                try {
-                                    // close the connection...
-                                    conn.close();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            /* If everything is sucessful, then move the user to the order page
-                            where they can review their order. Also set a temporary session 
-                            attribute in order to retrive the user from the database on the next
-                            page */
-                            response.setStatus(response.SC_MOVED_TEMPORARILY);
-                            session.setAttribute("C_ID", C_ID);
-                            response.setHeader("Location", "order.jsp");
-                        }
-                    } else {
-                        error = true;
-                        message = "The length of the fields you entered does not match what is allowable in the database. Please fill the form out correctly.";
                     }
 
-                    // If there are any errors in the inpput, then send the message to the user.
+                    // Proceed to collect the fields from the form if there are no errors.
+                    if (!error) {
+                        // Collect all of the fields from the request
+                        String C_FNAME = request.getParameter("C_FNAME");
+                        String C_LNAME = request.getParameter("C_LNAME");
+                        String C_EMAIL = request.getParameter("C_EMAIL");
+                        String C_ADDRESS = request.getParameter("C_ADDRESS");
+                        String C_CITY = request.getParameter("C_CITY");
+                        String C_STATE = request.getParameter("C_STATE");
+                        String C_ZIP = request.getParameter("C_ZIP");
+                        String O_CATNAME = request.getParameter("O_CATNAME");
+                        O_QUANTITY = Integer.parseInt(request.getParameter("O_QUANTITY"));
+                        String shipping = request.getParameter("shipping");
+
+                        // Check to see the category name and then assign the category price based on that
+                        if (O_CATNAME.equalsIgnoreCase("Category 1")) {
+                            CAT_PRICE = CATEGORY_ONE;
+                        } else if (O_CATNAME.equalsIgnoreCase("Category 2")) {
+                            CAT_PRICE = CATEGORY_TWO;
+                        } else {
+                            CAT_PRICE = CATEGORY_THREE;
+                        }
+
+                        // Calculate subtotal
+                        subTotal = CAT_PRICE * O_QUANTITY;
+                        
+                        // Apply service fee if ticket will not be picked at the box office
+                        if (!shipping.equalsIgnoreCase("Pick up at Box Office (Free)")) {
+                            // Calculate fee
+                            O_FEE = subTotal * serviceFee;
+                        }
+
+                        // Calculate the total
+                        O_TOTAL = subTotal + O_FEE;
+
+                        // Add shipping if user selects this option
+                        if (shipping.equalsIgnoreCase("Ship to address ($5.95)")) {
+                            O_SHIPPING = 5.95;
+                            O_TOTAL += O_SHIPPING;
+                        }
+                        try {
+                            // Connection variables
+                            conn = null;
+                            Class.forName(driver);
+                            conn = DriverManager.getConnection(url);
+                            conn.setAutoCommit(false);
+                            System.out.println("DB Connection successful");
+
+                            // Prepare to insert client info
+                            StringBuilder cBuilder = new StringBuilder();
+                            cBuilder.append("INSERT INTO CLIENTS(C_FNAME, C_LNAME, C_EMAIL, C_ADDRESS, C_ZIP, C_CITY, C_STATE)");
+                            cBuilder.append("VALUES (?, ?, ?, ?, ?, ?, ?)");
+                            String cPreparedQuery = cBuilder.toString();
+
+                            /* Declare the prepared statement and once it executes, recieve back the auto generated key that was used
+                            as the primary key for the client */
+                            PreparedStatement cStatement = conn.prepareStatement(cPreparedQuery, Statement.RETURN_GENERATED_KEYS);
+                            cStatement.setString(1, C_FNAME);
+                            cStatement.setString(2, C_LNAME);
+                            cStatement.setString(3, C_EMAIL);
+                            cStatement.setString(4, C_ADDRESS);
+                            cStatement.setString(5, C_ZIP);
+                            cStatement.setString(6, C_CITY);
+                            cStatement.setString(7, C_STATE);
+
+                            // Execute the statment
+                            cStatement.executeUpdate();
+
+                            // Get the auto generated key and store it for next orders table insertion
+                            ResultSet generateKey = cStatement.getGeneratedKeys();
+
+                            // If there is a result store it in a variable
+                            if (generateKey.next()) {
+                                C_ID = generateKey.getInt(1);
+                            }
+
+                            // Prepare to insert order info into the Orders table
+                            StringBuilder oBuilder = new StringBuilder();
+                            oBuilder.append("INSERT INTO ORDERS(O_QUANTITY, O_SHIPPING, O_FEE, O_TOTAL, O_CATNAME, C_ID)");
+                            oBuilder.append("VALUES (?, ?, ?, ?, ?, ?)");
+                            String oPreparedQuery = oBuilder.toString();
+
+                            // Set the prepared statement
+                            PreparedStatement oStatement = conn.prepareStatement(oPreparedQuery);
+                            oStatement.setInt(1, O_QUANTITY);
+                            oStatement.setDouble(2, O_SHIPPING);
+                            oStatement.setDouble(3, O_FEE);
+                            oStatement.setDouble(4, O_TOTAL);
+                            oStatement.setString(5, O_CATNAME);
+                            oStatement.setInt(6, C_ID);
+
+                            // Execute the statement
+                            oStatement.executeUpdate();
+
+                            // Prepare to update cat info
+                            StringBuilder catBuilder = new StringBuilder();
+                            catBuilder.append("UPDATE SEATS SET S_SOLD = S_SOLD + ?, S_TOTAL = S_TOTAL + ? WHERE S_CAT = ?");
+                            String catPreparedQuery = catBuilder.toString();
+
+                            // Set the prepared statment
+                            PreparedStatement catStatement = conn.prepareStatement(catPreparedQuery);
+                            catStatement.setInt(1, O_QUANTITY);
+                            catStatement.setDouble(2, O_TOTAL);
+                            catStatement.setString(3, O_CATNAME);
+
+                            // Execute the statement
+                            catStatement.executeUpdate();
+
+                            // Commit all changes to the database
+                            conn.commit();
+
+                            // Print message to ensure that all changes have been commited
+                            System.out.println("All changes commited.");
+
+                            // Catch exceptions
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            try {
+                                conn.rollback();
+                            } catch (Exception re) {
+                                re.printStackTrace();
+                            }
+                        } finally {
+                            // try to close the connection...
+                            try {
+                                // close the connection...
+                                conn.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        /* If everything is sucessful, then we can show the completed
+                        order to the user. */
+                        showOrder = true;
+                    }
                 } else {
+                    /* If something is not succesful that means that there is an error and we need to send a message to 
+                    the user letting them know.*/
                     error = true;
-                    message = "Please fill out the form correctly.";
+                    message = "The length of the fields you entered does not match what is allowable in the database. Please fill the form out correctly.";
                 }
             }
 
-            // A query specifically to display the amount of seats that are available to the user
-            try {
-                Class.forName(driver).newInstance();
-                conn = DriverManager.getConnection(url);
-                conn.setAutoCommit(false);
+            // If the order is not set to show, then the user has not submitted the form
+            if (!showOrder) {
+                try {
+                    Class.forName(driver).newInstance();
+                    conn = DriverManager.getConnection(url);
+                    conn.setAutoCommit(false);
 
-                // First query
-                String queryStr = "SELECT S_CAT, S_SOLD, S_PRICE FROM SEATS";
-                preparedStatement = conn.prepareStatement(queryStr);
-                query = preparedStatement.executeQuery();
+                    // A query specifically to display the amount of seats that are available to the user
+                    // First query
+                    String queryStr = "SELECT S_CAT, S_SOLD, S_PRICE FROM SEATS";
+                    preparedStatement = conn.prepareStatement(queryStr);
+                    query = preparedStatement.executeQuery();
         %> 
 
         <% if (error) {%>
@@ -294,14 +289,10 @@
             <div class="wrapper text--light">
                 <div class="grid--half">
                     <div class="grid--half__item">
-                        <h1>Reserve Seats</h1>
-                        <p class="text--emphasize">Enter your personal information below. <br>A 7% service fee will be added to all online purchases. Tickets are non-refundable.</p>
+                        <h1>Reserve Your Seats</h1>
+                        <p class="text--emphasize">Enter your personal information below. <br>A 7% service fee will be added to all online purchases. Tickets are non-refundable. There is no tax on tickets.</p>
                     </div>
                     <div class="grid--half__item">
-                        <!-- <div class="box">
-                                                <h3>Ticket Prices</h3>
-                                            <p>Category 1: Rows A-C - $50<br>Category 2: Rows D-F - $40<br>Category 3: Rows G-I - $30</p>
-                            </div>-->
                         <div class="box">
                             <h3>Available Tickets and Prices</h3>	
                             <script>
@@ -315,7 +306,6 @@
                                 ticketsAvailable.push(<% out.print(75 - query.getInt("S_SOLD"));%>);
                             </script>
                             <%
-
                                         CAT_ID++;
                                     }
                                 } catch (Exception e) {
@@ -355,28 +345,28 @@
                             <div class="form--row">
                                 <div class="form--group">
                                     <label for="C_FNAME">First Name</label>
-                                    <input type="text" class="form--control" name="C_FNAME" id="C_FNAME" required>
+                                    <input type="text" class="form--control" name="C_FNAME" id="C_FNAME" required pattern="(^[a-zA-Z][\\']?[a-zA-Z\\s]+$)" title="First Name Only">
                                 </div>
                                 <div class="form--group">
                                     <label for="C_LNAME">Last Name</label>
-                                    <input type="text" class="form--control" name="C_LNAME" id="C_LNAME" required>
+                                    <input type="text" class="form--control" name="C_LNAME" id="C_LNAME" required pattern="(^[a-zA-Z][\\']?[a-zA-Z\\s]+$)" title="Last Name Only">
                                 </div>
                             </div>
                             <div class="form--group">
                                 <label for="C_EMAIL">Email</label>
-                                <input type="email" class="form--control" name="C_EMAIL" id="C_EMAIL" required>
+                                <input type="email" class="form--control" name="C_EMAIL" id="C_EMAIL" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" title="Valid Email Address">
                             </div>
 
                             <div class="form--row">
                                 <div class="form--group">
                                     <label for="C_ADDRESS">Address</label>
-                                    <input type="text" class="form--control" name="C_ADDRESS" id="C_ADDRESS" required>
+                                    <input type="text" class="form--control" name="C_ADDRESS" id="C_ADDRESS" required pattern="^[#0-9a-zA-Z\s,-]+$" title="Valid Address">
                                 </div>                    </div>
                         </div>
                         <div class="grid--thirds__item">
                             <div class="form--group">
                                 <label for="C_CITY">City</label>
-                                <input type="text" class="form--control" name="C_CITY" id="C_CITY" required>
+                                <input type="text" class="form--control" name="C_CITY" id="C_CITY" required pattern="(^[a-zA-Z][\\']?[a-zA-Z\s]+$)" title="Valid City">
                             </div>
                             <div class="form--group">
                                 <label for="C_STATE">State</label>
@@ -437,7 +427,7 @@
                             </div>
                             <div class="form--group">
                                 <label for="C_ZIP">Zip</label>
-                                <input type="text" class="form--control" name="C_ZIP" id="C_ZIP" required>
+                                <input type="text" class="form--control" name="C_ZIP" id="C_ZIP" required pattern="(^[0-9]+$)" title="Valid Zip Code">
                             </div>
                         </div>
 
@@ -453,8 +443,8 @@
                                     </select>
                                 </div>
                                 <div class="form--group">
-                                    <label for="O_QUANTITY" id="O_QUANTITY_label">How many tickets? (1MIN - 75 MAX)</label>
-                                    <input class="form--control" id="O_QUANTITY" name="O_QUANTITY" type="number" min="1" max="75" required>
+                                    <label for="O_QUANTITY" id="O_QUANTITY_label">How many tickets? (1 MIN - 75 MAX)</label>
+                                    <input class="form--control" id="O_QUANTITY" name="O_QUANTITY" type="number" min="1" max="75" required pattern="(^[0-9]+$)" title="Valid Ticket Amound">
                                 </div>
                                 <div class="form--group">
                                     <label for="shipping">How would you like to receive your tickets?</label>
@@ -472,7 +462,69 @@
                     <input class="button button--light" type="reset" value="Reset Order"/>
                 </form>
             </div>
+        </div><%} else { %>
+        <div class="showcase--medium-screen-plus background background2 text--light">
+            <div class="wrapper">
+                <div class="box">
+                    <h1>This is your ticket to Jazz Grasp!</h1>
+                    <h2>See you at Theatre Charlotte on April 13th, 2018 at 7:30pm.</h2>
+                    <p class="text--emphasize">
+                        <% if (O_SHIPPING > 0) { %>
+                        Please wait 5 to 7 business days for your ticket.
+                        <%   } else { %>
+                        Print a copy of this page for your records.
+                        <%      } %>
+
+                        Tickets are non-refundable.</p>
+                    <table class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th colspan="2">Personal Information</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>First Name: <strong><%=request.getParameter("C_FNAME")%></strong></td>
+                                <td>Last Name: <strong><%=request.getParameter("C_LNAME")%></strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Address: <strong><%=request.getParameter("C_ADDRESS")%></strong></td>
+                            </tr>
+                            <tr>
+                                <td>City: <strong><%=request.getParameter("C_CITY")%></strong></td>
+                                <td>Zip Code: <strong><%=request.getParameter("C_ZIP")%></strong></td>
+                            </tr>
+                            <tr>
+                                <td>State: <strong><%=request.getParameter("C_STATE")%></strong></td>
+                                <td>Email: <strong><%=request.getParameter("C_EMAIL")%></strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Service Fee</th>
+                                <th>Shipping Fee</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><%=request.getParameter("O_CATNAME")%></td>
+                                <td><%=request.getParameter("O_QUANTITY")%>  X</td>
+                                <td><%=String.format("$%,.2f", subTotal)%></td>
+                                <td><%=String.format("$%,.2f", O_FEE)%></td>
+                                <td><%=String.format("$%,.2f", O_SHIPPING)%></td>
+                                <td><%=String.format("$%,.2f", O_TOTAL)%></td>
+                            </tr>
+                    </table>
+                </div>
+            </div>
         </div>
+        <% }%>
 
         <footer class="background--dark">
             <div class="wrapper--unpadded">

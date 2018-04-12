@@ -7,7 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@ page language="java" import="java.util.*" errorPage="" %>
-<html>
+<html lang="en">
     <head>
         <!-- Required meta tags -->
         <meta charset="utf-8">
@@ -88,7 +88,7 @@
         <main class="showcase--medium-screen-plus background background2">
             <div class="wrapper">
                 <div class="box text--light">
-                    <h1>Results of the query</h1>
+                    <h1>Results of the Query</h1>
                     <p class="text--emphasize">Tickets Sold Per Category</p>
                     <table class="table table-striped">
                         <thead>
